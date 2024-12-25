@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Netflix Clone</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <style>
+    .hidden {
+      display: none;
+    }
+    .thumbnail {
+      transition: transform 0.2s; /* Transisi halus */
+      cursor: pointer; /* Kursor pointer saat hover */
+    }
+    .thumbnail:hover {
+      transform: scale(1.05); /* Membesarkan gambar saat hover */
+    }
+    /* Gaya untuk modal */
+    .modal {
+      display: none; /* Tersembunyi secara default */
+      position: fixed; /* Tetap di tempat */
+      z-index: 1; /* Di atas elemen lain */
+      left: 0;
+      top: 0;
+      width: 100%; /* Lebar penuh */
+      height: 100%; /* Tinggi penuh */
+      overflow: auto; /* Aktifkan scroll jika diperlukan */
+      background-color: rgb(0,0,0); /* Latar belakang hitam */
+      background-color: rgba(0,0,0,0.9); /* Latar belakang hitam dengan transparansi */
+    }
+    /* Gaya untuk gambar dalam modal */
+    .modal-content {
+      margin: auto;
+      display: block;
+      width: 80%; /* Lebar gambar */
+      max-width: 700px; /* Lebar maksimum gambar */
+    }
+    /* Gaya untuk tombol close */
+    .close {
+      position: absolute;
+      top: 15px;
+      right: 35px;
+      color: white;
+      font-size: 40px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    /* Gaya untuk popup */
+    .popup {
+      max-width: 90%; /* Maksimal lebar popup */
+      max-height: 90%; /* Maksimal tinggi popup */
+      overflow-y: auto; /* Scroll jika konten lebih tinggi dari popup */
+      padding: 20px; /* Padding di dalam popup */
+      border-radius: 8px; /* Sudut melengkung */
+    }
+  </style>
+</head>
+<body class="bg-black text-white">
+  <header class="flex items-center justify-between p-4 bg-black">
+    <div class="text-red-600 text-3xl font-bold">NETFLIX</div>
+    <nav class="space-x-4">
+      <a class="text-white" href="#" id="home-link">Home</a>
+      <a class="text-white" href="#" id="series-link">Series</a>
+      <a class="text-white" href="#" id="movies-link">Movies</a>
+      <a class="text-white" href="#" id="new-popular-link">New and Popular</a>
+      <a class="text-white" href="#">My List</a>
+    </nav>
+    <div class="flex items-center space-x-4">
+      <i class="fas fa-search text-white"></i>
+      <i class="fas fa-bell text-white"></i>
+      <i class="fas fa-user-circle text-white"></i>
+    </div>
+  </header>
+  <main class="relative" id="home-section">
+    <img alt="A woman smiling in a dimly lit restaurant" class="w-full h-screen object-cover" height="1080" src="foto/3c63e84e-ad4a-4357-be4b-aa77dba81145.jpg" width="1920"/>
+    <div class="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-start p-8">
+      <h1 class="text-4xl font-bold mb-4">Another Year of Memories Waiting to Be Made!!</h1>
+      <p class="text-lg mb-4">This is Deswita, a lovely girl who can’t resist chocolate and is down to eat anything. She’s one of a kind and always fills my days with happiness. And today’s her special day! Curious about the birthday message?</p>
+      <div class="space-x-4">
+        <button class="bg-white text-black px-4 py-2 rounded" id="play-button">Play</button>
+        <button class="bg-gray-700 text-white px-4 py-2 rounded" id="more-info-button">More Info</button>
+      </div>
+    </div>
+  </main>
+  <main class="hidden" id="movies-section">
+    <div class="p-8">
+      <h1 class="text-3xl font-bold mb-4">Movies</h1>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="movies-grid">
+        <!-- Movies will be inserted here by JavaScript -->
+      </div>
+    </div>
+  </main>
+  <main class="hidden" id="series-section">
+    <div class="p-8">
+      <h1 class="text-3xl font-bold mb-4">Series</h1>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="series-grid">
+        <!-- Series will be inserted here by JavaScript -->
+      </div>
+    </div>
+  </main>
+  <main class="hidden" id="new-popular-section">
+    <div class="relative">
+      <img alt="A woman smiling in a dimly lit restaurant" class="w-full h-screen object-cover" height="1080" src="foto/3c63e84e-ad4a-4357-be4b-aa77dba81145.jpg" width="1920"/>
+      <div class="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-start p-8">
+        <h1 class="text-4xl font-bold mb-4">Another Year of Memories Waiting to Be Made!!</h1>
+        <p class="text-lg mb-4">This is Deswita, a lovely girl who can’t resist chocolate and is down to eat anything. She’s one of a kind and always fills my days with happiness. And today’s her special day! Curious about the birthday message?</p>
+      </div>
+    </div>
+    <div class="p-8" id="history-section">
+      <h1 class="text-3xl font-bold mb-4">History of Events</h1>
+      <ul class="list-disc list-inside">
+        <li>Event 1: Another Year of Memories Waiting to Be Made!!</li>
+        <!-- Add more events as needed -->
+      </ul>
+    </div>
+  </main>
+  <div class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center hidden" id="popup">
+    <div class="bg-white text-black popup">
+      <h2 class="text-2xl font-bold mb-4">Happy Birthday, Wiwit❤️!!</h2>
+      <p class="mb-4">happy birthday sayangkuuu, my sweet girl❤️🤏. btw umur nya udah sama nii kaya aku ,semoga panjang umurr sehat selalu, semangatt terus kuliahnyaa bentar lagi luluss lohh!!, tambah sayang sm orang tua, samo dapin jugoo xixii, tambah sholeha, tambah gemoyy, tambah dipermudah segala urusannya, diperlancar rezekinya🙏🏻🙏🏻, dapin selalu bangga sm wita, bersyukur bangett biso terus sm wita, tetap jadi wita yang dapin kenal. jangan berubah yaa cantikk, jangan ngilang” dapin selalu nunggu kabar dari wita, semoga diumur yang sekarang lebih baik lagii dari tahun sebelumnya. lebih sabar, lebih perhatian, lebih pengertian, bahagia selaluu, jangan sedih sedih lagii, kalo ad masalah harus cerita sm dapin, kalo ad ap” cerita sm dapin. jangan sampe dipendem yang ada nanti malah makan hati terus . sebaliknyo dapin jugo cak ituu. dapin sllu ngomong inget wita tu sekarang dak dewekan lagi, sekarang ad dapin jadi kalo ad masalah kito cari solusiny bareng” kito jalani bareng”, dapin dk galak cuma kebagian senengny bae, dapin pengen selalu ado buat wita disaat sedih jugo. dapin bersyukurr bgt biso kenal sm wita, yang mandiri, kerja keras, dewasa, aurany selalu positif, semoga diumur yang sekarang biso buat wita jadi tambah semangat dalam segala hal, impiannya mulai tercapai, cepet dapet begawe, makasii yaa cantikk dah selalu buatku bahagiaa setiap harinya, bikin ak mood setiap harinyaa, maafin dapin yaa kalo sering ngeselin atau ngilang” (sebenerny emng pgn dicariin sii😜) . jangan bosen sm akuu, kalo ad yang kurang dari dapin ngmg ke dapin jgn dipendem jgn dk lemakaan, dapin jg btuh intropeksi diri kalo ad yang kurang dari diriku, dapin bersyukur banyaktt sampe detik ini masih ngeraso disayang diperhatike sm wita kadang klo ak ngilang di cariin. makasii yaa sllu ad buat dapin, hm bingung nk ngmg ap lagi pkkny doa terbaik dari yang terbaik sllu untuk witaa. dan ak sllu bersyukur sllu dngn wita smpe skrg. tetap menjadi perempuan yang cukup satu cowo yaa sayangg. proud of you wiwit❤️🥰, im so lucky to hv u🥰❤️🤍.</p>
+      <button class="bg-red-600 text-white px-4 py-2 rounded" id="close-popup">Close</button>
+    </div>
+  </div>
+  <div class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center hidden" id="more-info-popup">
+    <div class="bg-white text-black p-8 rounded shadow-lg max-w-lg w-full">
+      <h2 class="text-2xl font-bold mb-4">More Information</h2>
+      <p class="mb-4">Deswita Dertiyani, lahir di Palembang, 26 Desember 2002. Lulusan D3 Akuntansi di Universitas Sriwijaya dan sekarang melanjutkan pendidikan S1 di Universitas Sriwijaya. Dia anak tunggal yang baik, perhatian, ngangenin, bahkan ngeselin. Sejauh ini olahraga yang ia senangi badminton. Karena waktu itu tahan beli 1 paket jersey sm bawahannya demi main badminton hehe. Dia suka makan apa saja, kalau dia lagi lapar hati-hati ya, bisa-bisa kalian yang dimakan. Karena dia suka memakan apa saja. Yang paling disenanginya cokelat dan sushi. Dia perempuan yang mandiri, kuat yang selalu sabar dalam menghadapi masalahnya (walaupun terkadang panik). Dia perempuan yang selalu membuat aku semangat buat memperbaiki diri, dia pekerja keras (walaupun kadang pagi-pagi suka tarik selimut lagi heheh), dia perempuan yang ceria dan selalu memberikan kesan yang baik di mana pun, mempunyai positif vibes yang sangat besar. Dia adalah definisi sempurna yang sebenarnya.</p>
+      <button class="bg-red-600 text-white px-4 py-2 rounded" id="close-more-info-popup">Close</button>
+    </div>
+  </div>
+  <div class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center hidden" id="image-modal">
+    <span class="close" onclick="closeImageModal()">&times;</span>
+    <img class="modal-content" id="modal-image">
+  </div>
+  <audio id="audio" src="Daniel-Caesar-Best-Part-Ft-HER-(TrendyBeatz.com).mp3"></audio>
+  <script>
+    const movies = [
+      { src: 'video/314a3b46-a5b1-45c7-99e1-825c37f315b5.mp4' },
+      { src: 'video/7E3065DF-D3AA-419E-8AAF-468E0B25F49D.mov' },
+      { src: 'video/e17e06e4-178d-47e2-a1fe-ec0aeaac3c42.mp4' },
+      { src: 'video/copy_764936C8-D631-4AEF-A85C-FF9E37420F84.mov', alt: 'Movie poster 4' }
+    ];
+
+    const series = [
+      { src: 'foto/IMG_3910.JPG', alt: 'Series poster 1' },
+      { src: 'foto/2774d42c-fb56-4b7a-8493-a1b3c8b6eb0c.jpg', alt: 'Series poster 2' },
+      { src: 'foto/2f74d3df-ad47-4fc9-875b-4127ee774a46 .jpg', alt: 'Series poster 3' },
+      { src: 'foto/IMG_3516.JPG', alt: 'Series poster 4' },
+      { src: 'foto/IMG_3813.JPG', alt: 'Series poster 5' },
+      { src: 'foto/IMG_3889.JPG', alt: 'Series poster 6' },
+      { src: 'foto/5b31bef9-2c24-4fa5-a303-49aad11ab0b6.jpg', alt: 'Series poster 7' },
+      { src: 'foto/IMG_4091.JPG', alt: 'Series poster 8' },
+      { src: 'foto/IMG_4468.JPG', alt: 'Series poster 9' },
+      { src: 'foto/IMG_9939.JPG', alt: 'Series poster 10' },
+      { src: 'foto/IMG_2948.JPG', alt: 'Series poster 11' },
+      { src: 'foto/IMG_2834.JPG', alt: 'Series poster 12' },
+      { src: 'foto/IMG_3516.JPG', alt: 'Series poster 13' },
+      { src: 'foto/IMG_0423.JPG', alt: 'Series poster 14' },
+      { src: 'foto/IMG_1121.PNG', alt: 'Series poster 15' },
+      { src: 'foto/c5275cdd-5468-4d24-a85a-a4b8f360146a.jpg', alt: 'Series poster 16' },
+      { src: 'foto/bfd02190-03ef-4468-a81c-a65fada36146.jpg', alt: 'Series poster 17' },
+      { src: 'foto/a749897a-27db-4629-ab41-9aff9154fa14.jpg', alt: 'Series poster 18' },
+      { src: 'foto/DE2C2316-CB11-457C-8874-D25CC2566ACE.jpg', alt: 'Series poster 19' },
+      { src: 'foto/e84b2475-779e-4d33-b649-cdb627dfc6ad.jpg', alt: 'Series poster 20' },
+      { src: 'foto/f857b8cc-439d-49e2-9b7a-6d0b9d2d2d83.jpg', alt: 'Series poster 21' },
+      { src: 'foto/f5df185e-9914-4661-b458-35cdca408294.jpg', alt: 'Series poster 22' },
+      { src: 'foto/f9d77ac0-f706-4538-8e5a-477c0af7dc21.jpg', alt: 'Series poster 23' },
+      { src: 'foto/5550ef8e-7a4b-4673-bec0-a611becd7560.jpg', alt: 'Series poster 24' },
+      { src: 'foto/IMG_2973.JPG', alt: 'Series poster 25' },
+      { src: 'foto/IMG_4469.JPG', alt: 'Series poster 26' },
+      { src: 'foto/IMG_3887.JPG', alt: 'Series poster 27' },
+      { src: 'foto/IMG_2551.JPG', alt: 'Series poster 28' },
+      { src: 'foto/IMG_2377.JPG', alt: 'Series poster 29' },
+      { src: 'foto/IMG_1655.JPG', alt: 'Series poster 30' },
+      { src: 'foto/IMG_1493.JPG', alt: 'Series poster 31' },
+      { src: 'foto/cb12fb5c-8970-430f-8075-fc064df4205a.jpg', alt: 'Series poster 32' },
+      { src: 'foto/d7ac1277-26ba-4de5-90a2-bcd6aee35296.jpg', alt: 'Series poster 33' },
+    ];
+
+    function populateGrid(gridId, items, isVideo = false) {
+      const grid = document.getElementById(gridId);
+      items.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'relative';
+        if (isVideo) {
+          const video = document.createElement('video');
+          video.src = item.src;
+          video.alt = item.alt;
+          video.className = 'w-full h-auto';
+          video.controls = true;
+          video.height = 450;
+          video.width = 300;
+          div.appendChild(video);
+        } else {
+          const img = document.createElement('img');
+          img.src = item.src;
+          img.alt = item.alt;
+          img.className = 'thumbnail w-full h-auto';
+          img.height = 450;
+          img.width = 300;
+          img.onclick = function() {
+            openImageModal(item.src);
+          };
+          div.appendChild(img);
+        }
+        grid.appendChild(div);
+      });
+    }
+
+    function openImageModal(src) {
+      document.getElementById('image-modal').classList.remove('hidden');
+      document.getElementById('modal-image').src = src;
+    }
+
+    function closeImageModal() {
+      document.getElementById('image-modal').classList.add('hidden');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      populateGrid('movies-grid', movies, true);
+      populateGrid('series-grid', series);
+      console.log('Populated grids'); // Log untuk memastikan fungsi dipanggil
+    });
+
+    document.getElementById('play-button').addEventListener('click', function() {
+      document.getElementById('popup').classList.remove('hidden');
+      document.getElementById('audio').play(); // Play audio when popup opens
+    });
+
+    document.getElementById('close-popup').addEventListener('click', function() {
+      document.getElementById('popup').classList.add('hidden');
+      const audio = document.getElementById('audio');
+      audio.pause(); // Stop audio when popup closes
+      audio.currentTime = 0; // Reset audio to the beginning
+    });
+
+    document.getElementById('more-info-button').addEventListener('click', function() {
+      document.getElementById('more-info-popup').classList.remove('hidden');
+    });
+
+    document.getElementById('close-more-info-popup').addEventListener('click', function() {
+      document.getElementById('more-info-popup').classList.add('hidden');
+    });
+
+    document.getElementById('movies-link').addEventListener('click', function() {
+      document.getElementById('home-section').classList.add('hidden');
+      document.getElementById('series-section').classList.add('hidden');
+      document.getElementById('new-popular-section').classList.add('hidden');
+      document.getElementById('movies-section').classList.remove('hidden');
+    });
+
+    document.getElementById('series-link').addEventListener('click', function() {
+      document.getElementById('home-section').classList.add('hidden');
+      document.getElementById('movies-section').classList.add('hidden');
+      document.getElementById('new-popular-section').classList.add('hidden');
+      document.getElementById('series-section').classList.remove('hidden');
+    });
+
+    document.getElementById('new-popular-link').addEventListener('click', function() {
+      document.getElementById('home-section').classList.add('hidden');
+      document.getElementById('movies-section').classList.add('hidden');
+      document.getElementById('series-section').classList.add('hidden');
+      document.getElementById('new-popular-section').classList.remove('hidden');
+    });
+
+    document.getElementById('home-link').addEventListener('click', function() {
+      document.getElementById('home-section').classList.remove('hidden');
+      document.getElementById('movies-section').classList.add('hidden');
+      document.getElementById('series-section').classList.add('hidden');
+      document.getElementById('new-popular-section').classList.add('hidden');
+    });
+
+    // Event listener untuk menutup modal gambar saat area di luar modal diklik
+    document.getElementById('image-modal').addEventListener('click', function(event) {
+      if (event.target === this) {
+        closeImageModal();
+      }
+    });
+  </script>
+</body>
+</html>
